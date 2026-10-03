@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlogForge</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#/" class="logo">
+                <i class="fa-solid fa-pen-nib"></i> BlogForge
+            </a>
+            
+            <div class="nav-links">
+                <a href="#/" class="nav-link">Home</a>
+                <a href="#/write" class="nav-link">Write</a>
+                <a href="#/dashboard" class="nav-link">Dashboard</a>
+            </div>
+
+            <div class="nav-actions">
+                <div class="search-bar">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search posts...">
+                </div>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="#/" class="mobile-link">Home</a>
+            <a href="#/write" class="mobile-link">Write</a>
+            <a href="#/dashboard" class="mobile-link">Dashboard</a>
+        </div>
+    </nav>
+
+    <main id="app">
+        <!-- Dynamic content goes here -->
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>BlogForge</h3>
+                <p>Crafting stories, sharing ideas, and exploring the world through words.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Links</h4>
+                <a href="#/">Home</a>
+                <a href="#/write">Write</a>
+                <a href="#/dashboard">Dashboard</a>
+            </div>
+            <div class="footer-col">
+                <h4>Follow Us</h4>
+                <div class="social-icons">
+                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-github"></i></a>
+                    <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 BlogForge. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div id="toast-container" class="toast-container"></div>
+    
+    <div id="modal-overlay" class="modal-overlay">
+        <div class="modal">
+            <h3 id="modal-title">Confirm Action</h3>
+            <p id="modal-message">Are you sure you want to proceed?</p>
+            <div class="modal-actions">
+                <button id="modal-cancel" class="btn btn-secondary">Cancel</button>
+                <button id="modal-confirm" class="btn btn-danger">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
