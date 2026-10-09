@@ -381,7 +381,11 @@ app.get('/api/posts', (req, res) => {
 // 2. GET /api/posts/:slug
 app.get('/api/posts/:slug', (req, res) => {
     try {
-        const post = queryOne('SELECT * FROM posts WHERE slug = ?', [req.params.slug]);
+        const isNumeric = /^\d+$/.test(req.params.slug);
+        const post = isNumeric
+            ? queryOne('SELECT * FROM posts WHERE id = ? OR slug = ?', [parseInt(req.params.slug), req.params.slug])
+            : queryOne('SELECT * FROM posts WHERE slug = ?', [req.params.slug]);
+
         if (!post) {
             return res.status(404).json({ error: 'Post not found' });
         }
@@ -518,7 +522,13 @@ app.delete('/api/posts/:id', (req, res) => {
 // 6. GET /api/categories
 app.get('/api/categories', (req, res) => {
     try {
-        const categories = queryAll('SELECT * FROM categories ORDER BY name ASC');
+        const categories = queryAll(`
+            SELECT c.id, c.name, c.slug, COUNT(p.id) as post_count
+            FROM categories c
+            LEFT JOIN posts p ON c.name = p.category AND p.status = 'published'
+            GROUP BY c.id
+            ORDER BY c.name ASC
+        `);
         res.json(categories);
     } catch (error) {
         console.error('GET /api/categories error:', error);

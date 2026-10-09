@@ -298,7 +298,7 @@ async function renderHome() {
     });
 
     const categoriesHtml = categories.map(cat => {
-        const count = categoryCounts[cat.name] || 0;
+        const count = cat.post_count !== undefined ? cat.post_count : (categoryCounts[cat.name] || 0);
         const isActive = state.categoryFilter === cat.name ? 'style="color:var(--primary); font-weight:600;"' : '';
         return `
         <li>
@@ -308,11 +308,15 @@ async function renderHome() {
         </li>`;
     }).join('');
 
+    const isFiltered = Boolean(state.searchQuery || (state.categoryFilter && state.categoryFilter !== 'all'));
     const filterInfo = state.searchQuery
-        ? `<span style="color:var(--text-muted);"> — searching "${escapeHtml(state.searchQuery)}"</span>`
+        ? `<span style="color:var(--text-muted); font-size:1.1rem; font-weight:normal;"> — searching "<strong>${escapeHtml(state.searchQuery)}</strong>"</span>`
         : state.categoryFilter !== 'all'
-            ? `<span style="color:var(--text-muted);"> — ${escapeHtml(state.categoryFilter)}</span>`
+            ? `<span style="color:var(--text-muted); font-size:1.1rem; font-weight:normal;"> — in <strong>${escapeHtml(state.categoryFilter)}</strong></span>`
             : '';
+    const clearBtn = isFiltered
+        ? `<button id="clear-filter-btn" class="btn btn-secondary" style="padding:0.35rem 0.8rem; font-size:0.85rem; display:inline-flex; align-items:center; gap:0.4rem;"><i class="fa-solid fa-xmark"></i> Clear filter</button>`
+        : '';
 
     return `
         <section class="hero">
@@ -325,7 +329,10 @@ async function renderHome() {
 
         <div class="home-layout">
             <div class="main-content">
-                <h2 style="margin-bottom: 2rem;">Latest Posts${filterInfo}</h2>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; flex-wrap:wrap; gap:1rem;">
+                    <h2 style="margin:0;">Latest Posts${filterInfo}</h2>
+                    ${clearBtn}
+                </div>
                 <div class="posts-grid">
                     ${postsHtml}
                 </div>
@@ -527,9 +534,7 @@ function setupEditor(id = '') {
     if (id) {
         (async () => {
             try {
-                // Fetch all posts and find by ID
-                const data = await api.getPosts({ limit: 1000 });
-                const post = data.posts.find(p => String(p.id) === String(id));
+                const post = await api.getPost(id);
                 if (post) {
                     titleInput.value = post.title || '';
                     categoryInput.value = post.category || 'Technology';
@@ -972,6 +977,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (catFilter) {
             e.preventDefault();
             state.categoryFilter = catFilter.dataset.cat || 'all';
+            router();
+        }
+
+        // Clear filter button on home page
+        if (e.target.closest('#clear-filter-btn')) {
+            e.preventDefault();
+            state.searchQuery = '';
+            state.categoryFilter = 'all';
+            const sInput = document.getElementById('searchInput');
+            if (sInput) sInput.value = '';
             router();
         }
 
